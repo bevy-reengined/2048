@@ -1,0 +1,10 @@
+[package]
+name = "step2_logic"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true }
+bevy_rand = { workspace = true }
+rand = { workspace = true }
+step1_board = { path = "../step1_board" }

@@ -4,11 +4,13 @@
 resolver = "3"
 members = [
   "step0_setup",
-  "step1_board",
+  "step1_board", "step2_logic",
 ]
 
 [workspace.dependencies]
 bevy = { version = "0.16.1", features = ["dynamic_linking", "wayland"] }
+bevy_rand = { version = "0.11.1", features = ["wyrand"] }
+rand = { version = "0.9.1" }
 
 [profile.dev]
 opt-level = 1

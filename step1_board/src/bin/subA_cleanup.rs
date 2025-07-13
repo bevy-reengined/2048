@@ -25,8 +25,8 @@ fn update_when_keypress(
     mut record: ResMut<BoardRecord>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
-        for i in 0..BOARD_WIDTH {
-            for j in 0..BOARD_WIDTH {
+        for i in 0..BOARD_SIZE {
+            for j in 0..BOARD_SIZE {
                 record.0[i][j] += i + j + 1;
             }
         }

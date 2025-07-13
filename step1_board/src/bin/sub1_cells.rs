@@ -4,11 +4,10 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        .add_systems(Update, update)
         .run();
 }
 
-const WIDTH: usize = 4;
+const BOARD_SIZE: usize = 4;
 
 fn setup(
     mut commands: Commands,
@@ -21,8 +20,8 @@ fn setup(
     let material = materials.add(Color::WHITE);
 
     // spawn a 4x4 board
-    for row in 0..WIDTH {
-        for col in 0..WIDTH {
+    for row in 0..BOARD_SIZE {
+        for col in 0..BOARD_SIZE {
             // calculate transform of cell
             let transform = calculate_transform(row, col);
 
@@ -55,8 +54,4 @@ fn calculate_transform(row: usize, col: usize) -> Transform {
     let y = (row - mean) * multiplier;
 
     Transform::from_xyz(x, y, 0.)
-}
-
-fn update(mut text: Single<&mut Text2d>) {
-    text.0 = "hello, tricky".to_string()
 }

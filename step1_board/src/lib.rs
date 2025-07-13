@@ -1,15 +1,18 @@
 use bevy::prelude::*;
 
-pub const BOARD_WIDTH: usize = 4;
+pub const BOARD_SIZE: usize = 4;
 
 pub struct BoardPlugin;
 
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup)
+        app.add_systems(Startup, setup.in_set(BoardInitialized))
             .add_systems(Update, sync_labels);
     }
 }
+
+#[derive(SystemSet, Clone, Debug, Eq, Hash, PartialEq)]
+pub struct BoardInitialized;
 
 fn setup(
     mut commands: Commands,
@@ -22,8 +25,8 @@ fn setup(
     let material = materials.add(Color::WHITE);
 
     // spawn a 4x4 board
-    for row in 0..BOARD_WIDTH {
-        for col in 0..BOARD_WIDTH {
+    for row in 0..BOARD_SIZE {
+        for col in 0..BOARD_SIZE {
             // calculate transform of cell
             let transform = calculate_transform(row, col);
 
@@ -71,7 +74,13 @@ fn calculate_transform(row: usize, col: usize) -> Transform {
 }
 
 #[derive(Resource, Default)]
-pub struct BoardRecord(pub [[usize; 4]; 4]);
+pub struct BoardRecord(pub [[usize; BOARD_SIZE]; BOARD_SIZE]);
+
+impl BoardRecord {
+    pub fn new(inner: [[usize; BOARD_SIZE]; BOARD_SIZE]) -> Self {
+        Self(inner)
+    }
+}
 
 #[derive(Component)]
 #[require(Text2d, Transform, TextColor::BLACK)]

@@ -8,7 +8,7 @@ fn main() {
         .run();
 }
 
-const WIDTH: usize = 4;
+const BOARD_SIZE: usize = 4;
 
 fn setup(
     mut commands: Commands,
@@ -21,8 +21,8 @@ fn setup(
     let material = materials.add(Color::WHITE);
 
     // spawn a 4x4 board
-    for row in 0..WIDTH {
-        for col in 0..WIDTH {
+    for row in 0..BOARD_SIZE {
+        for col in 0..BOARD_SIZE {
             // calculate transform of cell
             let transform = calculate_transform(row, col);
 
@@ -46,7 +46,7 @@ fn setup(
     }
 
     // insert resource
-    commands.insert_resource(BoardRecord([[0; 4]; 4]));
+    commands.insert_resource(BoardRecord([[0; BOARD_SIZE]; BOARD_SIZE]));
 
     // greeting text
     commands.spawn((
@@ -56,7 +56,7 @@ fn setup(
 }
 
 #[derive(Resource)]
-struct BoardRecord([[usize; 4]; 4]);
+struct BoardRecord([[usize; BOARD_SIZE]; BOARD_SIZE]);
 
 #[derive(Component)]
 struct BoardCellLabel {
@@ -70,8 +70,8 @@ fn update_when_keypress(
     mut record: ResMut<BoardRecord>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
-        for i in 0..WIDTH {
-            for j in 0..WIDTH {
+        for i in 0..BOARD_SIZE {
+            for j in 0..BOARD_SIZE {
                 record.0[i][j] += i + j + 1;
             }
         }
