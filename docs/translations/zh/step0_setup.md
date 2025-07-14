@@ -3,6 +3,7 @@
 ## Rust 编程语言
 
 [Bevy](https://bevy.org/) 游戏开发以 [Rust 编程语言](https://www.rust-lang.org/) 为主，本教程假设读者已经具有基本的 Rust 知识。
+
 如果你对 Rust 尚不够了解，我们推荐你参考以下资料：
 
 - [《Rust 编程语言》](https://kaisery.github.io/trpl-zh-cn/)：官方手册中文翻译，其中包含[安装](https://kaisery.github.io/trpl-zh-cn/ch01-01-installation.html)流程
@@ -51,14 +52,16 @@ bevy = "0.16"
 ## 初步上手
 
 编程的第一步总是显示「hello, world」，在本步骤中，我们将实现类似功能。
-显示效果如下：
+
+最终效果如下：
 
 ![step0_sub1](../../assets/step0_sub2.png)
 
 ### 子步骤一：应用入口
 
-> [!TIPS]
+> [!TIP]
 > 完整源码见 [`step0_setup/src/bin/sub1_app.rs`](../../../step0_setup/src/bin/sub1_app.rs).
+>
 > 也可使用 `cargo run --package step0_setup --bin sub1_app` 直接运行。
 
 在 `src/main.rs` 中写入以下代码：
@@ -102,8 +105,9 @@ fn main() {
 
 ### 子步骤二：显示文本
 
-> [!TIPS]
+> [!TIP]
 > 完整源码见 [`step0_setup/src/bin/sub2_hello.rs`](../../../step0_setup/src/bin/sub2_hello.rs).
+>
 > 也可使用 `cargo run --package step0_setup --bin sub2_hello` 直接运行。
 
 创建应用完后，我们来进一步编写「hello, bevy」程序。
