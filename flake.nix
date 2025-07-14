@@ -38,6 +38,7 @@
               libxkbcommon
             ];
             nativeBuildInputs = [
+              pkg-config
             ];
             LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
           };
