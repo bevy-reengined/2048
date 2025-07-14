@@ -3,8 +3,9 @@
 [workspace]
 resolver = "3"
 members = [
-  "step0_setup",
-  "step1_board", "step2_logic",
+  "ch0_setup",
+  "ch1_board",
+  "ch2_logic",
 ]
 
 [workspace.dependencies]

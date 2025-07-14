@@ -1601,6 +1601,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
+name = "ch0_setup"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
+name = "ch1_board"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
+name = "ch2_logic"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rand",
+ "ch1_board",
+ "rand 0.9.1",
+]
+
+[[package]]
 name = "clang-sys"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4014,30 +4038,6 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
-
-[[package]]
-name = "step0_setup"
-version = "0.1.0"
-dependencies = [
- "bevy",
-]
-
-[[package]]
-name = "step1_board"
-version = "0.1.0"
-dependencies = [
- "bevy",
-]
-
-[[package]]
-name = "step2_logic"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_rand",
- "rand 0.9.1",
- "step1_board",
-]
 
 [[package]]
 name = "strict-num"

@@ -55,14 +55,14 @@ bevy = "0.16"
 
 最终效果如下：
 
-![step0_sub3](../../assets/step0_sub3.png)
+![ch0_step3](../../assets/ch0/step3.png)
 
 ### 子步骤一：应用入口
 
 > [!TIP]
-> 完整源码见 [`step0_setup/src/bin/sub1_app.rs`](../../../step0_setup/src/bin/sub1_app.rs).
+> 完整源码见 [`ch0_setup/src/bin/step1_app.rs`](../../../ch0_setup/src/bin/step1_app.rs).
 >
-> 也可使用 `cargo run --package step0_setup --bin sub1_app` 直接运行。
+> 也可使用 `cargo run --package ch0_setup --bin step1_app` 直接运行。
 
 在 `src/main.rs` 中写入以下代码：
 
@@ -82,13 +82,13 @@ fn main() {
 然后命令行敲入 `cargo run` 即可启动。
 
 > [!NOTE]
-> Bevy 首次编译是全量编译，需要较长的时间。你可以趁此时间休息，或者也可以回顾游玩一下原版 [2048](play2048.co) 游戏。
+> Bevy 首次编译是全量编译，需要较长的时间。你可以趁此时间休息，或者也可以回顾游玩一下原版 [2048](https://play2048.co) 游戏。
 >
 > 后续增量编译耗时会大幅减少。在本文的后续部分，我们也会介绍进一步减少编译时间的办法。
 
 在程序开始后，会弹出一个窗口如下图。由于目前我们尚未添加实际内容，因此窗口是空的。
 
-![step0_sub1](../../assets/step0_sub1.png)
+![ch0_step2](../../assets/ch0/step2.png)
 
 在进一步编写内容之前，我们先来仔细剖析以上代码：
 
@@ -106,9 +106,9 @@ fn main() {
 ### 子步骤二：显示文本
 
 > [!TIP]
-> 完整源码见 [`step0_setup/src/bin/sub2_hello.rs`](../../../step0_setup/src/bin/sub2_hello.rs).
+> 完整源码见 [`ch0_setup/src/bin/step2_hello.rs`](../../../ch0_setup/src/bin/step2_hello.rs).
 >
-> 也可使用 `cargo run --package step0_setup --bin sub2_hello` 直接运行。
+> 也可使用 `cargo run --package ch0_setup --bin step2_hello` 直接运行。
 
 创建应用完后，我们来进一步编写「hello, bevy」程序。
 为了显示这一段文字，我们需要分别创建文本和相机。
@@ -147,4 +147,4 @@ TODO: 是否要在此完整介绍生命周期？/ Update / 链接到 Tips
 
 Rust 是高度优化的编译型语言。
 
-// TODO:
+TODO:

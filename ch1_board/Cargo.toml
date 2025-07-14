@@ -1,8 +1,8 @@
 [package]
-name = "step1_board"
+name = "ch1_board"
 version = "0.1.0"
 edition = "2024"
-default-run = "subA_cleanup"
+default-run = "step6_cleanup"
 
 [dependencies]
 bevy = { workspace = true }

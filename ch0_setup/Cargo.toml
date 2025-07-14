@@ -1,7 +1,8 @@
 [package]
-name = "step0_setup"
+name = "ch0_setup"
 version = "0.1.0"
 edition = "2024"
+default-run = "step3_ecs"
 
 [dependencies]
 bevy = { workspace = true }

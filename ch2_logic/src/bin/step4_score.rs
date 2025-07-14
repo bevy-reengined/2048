@@ -3,25 +3,45 @@ use bevy_rand::{
     global::GlobalEntropy,
     prelude::{EntropyPlugin, WyRand},
 };
+use ch1_board::*;
 use rand::{Rng, seq::IndexedRandom};
-use step1_board::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(EntropyPlugin::<WyRand>::default())
         .add_plugins(BoardPlugin)
-        .add_systems(Startup, greet)
+        .add_plugins(ScorePlugin)
         .add_systems(Startup, assign_example_board.after(BoardInitialized))
         .add_systems(Update, update_when_keypress)
         .run();
 }
 
-fn greet(mut commands: Commands) {
-    commands.spawn((
-        Text2d::new("hello, merge"),
-        Transform::from_xyz(0., 150., 0.),
-    ));
+#[derive(Resource, Default)]
+struct Score(usize);
+
+#[derive(Component)]
+#[require(Text2d, Transform::from_xyz(0., 150., 0.))]
+struct ScoreLabel;
+
+struct ScorePlugin;
+
+impl Plugin for ScorePlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<Score>()
+            .add_systems(Startup, init_score_label)
+            .add_systems(Update, sync_score_label);
+    }
+}
+
+fn init_score_label(mut commands: Commands) {
+    commands.spawn((ScoreLabel,));
+}
+
+fn sync_score_label(mut label: Single<&mut Text2d, With<ScoreLabel>>, score: Res<Score>) {
+    if score.is_changed() {
+        label.0 = format!("hello, score = {}", score.0);
+    }
 }
 
 fn assign_example_board(mut record: ResMut<BoardRecord>, mut rng: GlobalEntropy<WyRand>) {
@@ -34,6 +54,7 @@ fn update_when_keypress(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut record: ResMut<BoardRecord>,
     mut rng: GlobalEntropy<WyRand>,
+    mut score: ResMut<Score>,
 ) {
     let board = &mut record.0;
 
@@ -41,15 +62,14 @@ fn update_when_keypress(
 
     // dispatch merge direction
     if keyboard.just_pressed(KeyCode::ArrowLeft) {
-        changed = r#move(board, Direction::Left);
+        changed = r#move(board, Direction::Left, &mut score.0);
     } else if keyboard.just_pressed(KeyCode::ArrowRight) {
-        changed = r#move(board, Direction::Right);
+        changed = r#move(board, Direction::Right, &mut score.0);
     } else if keyboard.just_pressed(KeyCode::ArrowUp) {
-        changed = r#move(board, Direction::Up);
+        changed = r#move(board, Direction::Up, &mut score.0);
     } else if keyboard.just_pressed(KeyCode::ArrowDown) {
-        changed = r#move(board, Direction::Down);
+        changed = r#move(board, Direction::Down, &mut score.0);
     }
-
     if changed {
         spawn(board, &mut rng);
     }
@@ -63,10 +83,14 @@ enum Direction {
     Left,
 }
 
-fn r#move(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) -> bool {
+fn r#move(
+    board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE],
+    direction: Direction,
+    score: &mut usize,
+) -> bool {
     let mut changed = false;
     changed = compact(board, direction) || changed;
-    changed = merge(board, direction) || changed;
+    changed = merge(board, direction, score) || changed;
     changed = compact(board, direction) || changed;
     changed
 }
@@ -104,7 +128,11 @@ fn compact(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) 
     changed
 }
 
-fn merge(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) -> bool {
+fn merge(
+    board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE],
+    direction: Direction,
+    score: &mut usize,
+) -> bool {
     use Direction::*;
 
     let mut changed = false;
@@ -133,6 +161,7 @@ fn merge(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) ->
             // next is equal
             if board[row][col] == board[row_next][col_next] {
                 board[row][col] *= 2;
+                *score += board[row][col];
                 board[row_next][col_next] = 0;
                 changed = true;
             }
@@ -142,7 +171,7 @@ fn merge(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) ->
     changed
 }
 
-fn spawn(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], rng: &mut GlobalEntropy<WyRand>) {
+fn spawn(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], rng: &mut GlobalEntropy<WyRand>) -> bool {
     // prepare domain
     let mut domain = vec![];
     for row in 0..BOARD_SIZE {
@@ -157,6 +186,9 @@ fn spawn(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], rng: &mut GlobalEntropy<
         let (row, col) = chosen;
         let value = if rng.random_bool(0.9) { 2 } else { 4 };
         board[*row][*col] = value;
+        true
+    } else {
+        false
     }
 }
 

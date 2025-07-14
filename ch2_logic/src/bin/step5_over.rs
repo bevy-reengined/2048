@@ -3,8 +3,8 @@ use bevy_rand::{
     global::GlobalEntropy,
     prelude::{EntropyPlugin, WyRand},
 };
+use ch1_board::*;
 use rand::{Rng, seq::IndexedRandom};
-use step1_board::*;
 
 #[derive(States, Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 enum GameState {
@@ -31,18 +31,15 @@ fn main() {
 
 mod menu {
     use bevy::prelude::*;
-    use bevy_rand::{global::GlobalEntropy, prelude::WyRand};
-    use step1_board::BoardRecord;
 
-    use crate::{GameState, Score, spawn};
+    use crate::GameState;
 
     #[derive(Component)]
     struct OnMenu;
 
     pub fn menu_plugin(app: &mut App) {
         app.add_systems(OnEnter(GameState::Menu), menu_setup)
-            .add_systems(OnExit(GameState::Menu), menu_cleanup)
-            .add_systems(Update, menu_button.run_if(in_state(GameState::Menu)));
+            .add_systems(OnExit(GameState::Menu), menu_cleanup);
     }
 
     fn menu_setup(mut commands: Commands) {
@@ -56,29 +53,13 @@ mod menu {
                 ..default()
             },
             BackgroundColor(Color::WHITE),
-            children![(Text::new("Game Over"), TextColor::BLACK),],
+            children![(OnMenu, Text::new("Game Over"), TextColor::BLACK),],
         ));
     }
 
     fn menu_cleanup(mut commands: Commands, query: Query<Entity, With<OnMenu>>) {
         for entity in query {
             commands.entity(entity).despawn();
-        }
-    }
-
-    fn menu_button(
-        keyboard: Res<ButtonInput<KeyCode>>,
-        mut record: ResMut<BoardRecord>,
-        mut score: ResMut<Score>,
-        mut rng: GlobalEntropy<WyRand>,
-        mut next_state: ResMut<NextState<GameState>>,
-    ) {
-        if keyboard.just_pressed(KeyCode::KeyR) {
-            score.0 = 0;
-            *record = BoardRecord::default();
-            spawn(&mut record.0, &mut rng);
-            spawn(&mut record.0, &mut rng);
-            next_state.set(GameState::Game);
         }
     }
 }

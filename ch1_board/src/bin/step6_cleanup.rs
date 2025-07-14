@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use step1_board::*;
+use ch1_board::*;
 
 fn main() {
     App::new()

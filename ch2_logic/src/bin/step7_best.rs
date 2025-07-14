@@ -3,8 +3,8 @@ use bevy_rand::{
     global::GlobalEntropy,
     prelude::{EntropyPlugin, WyRand},
 };
+use ch1_board::*;
 use rand::{Rng, seq::IndexedRandom};
-use step1_board::*;
 
 #[derive(States, Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 enum GameState {
@@ -31,15 +31,18 @@ fn main() {
 
 mod menu {
     use bevy::prelude::*;
+    use bevy_rand::{global::GlobalEntropy, prelude::WyRand};
+    use ch1_board::BoardRecord;
 
-    use crate::GameState;
+    use crate::{GameState, Score, spawn};
 
     #[derive(Component)]
     struct OnMenu;
 
     pub fn menu_plugin(app: &mut App) {
         app.add_systems(OnEnter(GameState::Menu), menu_setup)
-            .add_systems(OnExit(GameState::Menu), menu_cleanup);
+            .add_systems(OnExit(GameState::Menu), menu_cleanup)
+            .add_systems(Update, menu_button.run_if(in_state(GameState::Menu)));
     }
 
     fn menu_setup(mut commands: Commands) {
@@ -53,7 +56,7 @@ mod menu {
                 ..default()
             },
             BackgroundColor(Color::WHITE),
-            children![(OnMenu, Text::new("Game Over"), TextColor::BLACK),],
+            children![(Text::new("Game Over"), TextColor::BLACK),],
         ));
     }
 
@@ -62,10 +65,26 @@ mod menu {
             commands.entity(entity).despawn();
         }
     }
+
+    fn menu_button(
+        keyboard: Res<ButtonInput<KeyCode>>,
+        mut record: ResMut<BoardRecord>,
+        mut rng: GlobalEntropy<WyRand>,
+        mut score: ResMut<Score>,
+        mut next_state: ResMut<NextState<GameState>>,
+    ) {
+        if keyboard.just_pressed(KeyCode::KeyR) {
+            score.0 = 0;
+            *record = BoardRecord::default();
+            spawn(&mut record.0, &mut rng);
+            spawn(&mut record.0, &mut rng);
+            next_state.set(GameState::Game);
+        }
+    }
 }
 
 #[derive(Resource, Default)]
-struct Score(usize);
+struct Score(usize, usize);
 
 #[derive(Component)]
 #[require(Text2d, Transform::from_xyz(0., 150., 0.))]
@@ -87,7 +106,7 @@ fn init_score_label(mut commands: Commands) {
 
 fn sync_score_label(mut label: Single<&mut Text2d, With<ScoreLabel>>, score: Res<Score>) {
     if score.is_changed() {
-        label.0 = format!("hello, score = {}", score.0);
+        label.0 = format!("hello, score = {}, best = {}", score.0, score.1);
     }
 }
 
@@ -110,13 +129,13 @@ fn update_when_keypress(
 
     // dispatch merge direction
     if keyboard.just_pressed(KeyCode::ArrowLeft) {
-        changed = r#move(board, Direction::Left, &mut score.0);
+        changed = r#move(board, Direction::Left, &mut score);
     } else if keyboard.just_pressed(KeyCode::ArrowRight) {
-        changed = r#move(board, Direction::Right, &mut score.0);
+        changed = r#move(board, Direction::Right, &mut score);
     } else if keyboard.just_pressed(KeyCode::ArrowUp) {
-        changed = r#move(board, Direction::Up, &mut score.0);
+        changed = r#move(board, Direction::Up, &mut score);
     } else if keyboard.just_pressed(KeyCode::ArrowDown) {
-        changed = r#move(board, Direction::Down, &mut score.0);
+        changed = r#move(board, Direction::Down, &mut score);
     } else if keyboard.just_pressed(KeyCode::Escape) {
         next_state.set(GameState::Menu);
     }
@@ -141,7 +160,7 @@ enum Direction {
 fn r#move(
     board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE],
     direction: Direction,
-    score: &mut usize,
+    score: &mut Score,
 ) -> bool {
     let mut changed = false;
     changed = compact(board, direction) || changed;
@@ -186,7 +205,7 @@ fn compact(board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE], direction: Direction) 
 fn merge(
     board: &mut [[usize; BOARD_SIZE]; BOARD_SIZE],
     direction: Direction,
-    score: &mut usize,
+    score: &mut Score,
 ) -> bool {
     use Direction::*;
 
@@ -216,7 +235,10 @@ fn merge(
             // next is equal
             if board[row][col] == board[row_next][col_next] {
                 board[row][col] *= 2;
-                *score += board[row][col];
+                score.0 += board[row][col];
+                if score.0 > score.1 {
+                    score.1 = score.0;
+                }
                 board[row_next][col_next] = 0;
                 changed = true;
             }
