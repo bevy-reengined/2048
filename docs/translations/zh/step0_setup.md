@@ -55,7 +55,7 @@ bevy = "0.16"
 
 最终效果如下：
 
-![step0_sub1](../../assets/step0_sub2.png)
+![step0_sub3](../../assets/step0_sub3.png)
 
 ### 子步骤一：应用入口
 

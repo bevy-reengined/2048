@@ -12,5 +12,14 @@ fn show_greet(mut commands: Commands) {
     commands.spawn(Camera2d);
 
     // greet text
-    commands.spawn(Text::new("Hello, Bevy!"));
+    commands.spawn((
+        Text::new("Hello, Bevy!"),
+        // 居中显示
+        Node {
+            margin: UiRect::all(Val::Auto),
+            ..default()
+        },
+        // default is 20.
+        TextFont::from_font_size(40.),
+    ));
 }
