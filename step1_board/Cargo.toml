@@ -2,7 +2,7 @@
 name = "step1_board"
 version = "0.1.0"
 edition = "2024"
-default-run = "stepA_cleanup"
+default-run = "subA_cleanup"
 
 [dependencies]
 bevy = { workspace = true }

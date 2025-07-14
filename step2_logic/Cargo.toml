@@ -2,7 +2,7 @@
 name = "step2_logic"
 version = "0.1.0"
 edition = "2024"
-default-run = "step7_best"
+default-run = "sub7_best"
 
 [dependencies]
 bevy = { workspace = true }
